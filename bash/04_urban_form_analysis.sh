@@ -13,14 +13,16 @@
 #############################################################################
 # This file simply calls the grass_patch_statistics file on a folder of shapefiles.
 
+source $SH/enter_grass.sh
 echo "Calculating patch statistics."
 
+
+#----------------------------------------------------------------------------------------
+# start loop
 for city in ${VEC}/city_boundaries/*.shp ; do
+    
 export NAME=$(echo `basename $city` | awk -F '.' '{ print $1 }')
-
 export BOUNDS=$(ogrinfo -al  $city  | grep "Extent: " | awk -F "[ (,)]" '{ print ("n="$5+2,"s="$11-2, "e="$9+2, "w="$3-2) }' )
-
-source $SH/enter_grass.sh
 
 echo "
 #################################
@@ -106,7 +108,11 @@ echo "Patch stats complete. Saved to ${NAME}.stat."
 mkdir -p $DIR/GTiffs/agglomeration
 r.out.gdal  input=urban_agglomeration output=GTiffs/agglomeration/$NAME format=GTiff --overwrite; 
 done
-   
+
+#----------------------------------------------------------------------------------------
+# end loop
+
+
 mkdir -p $DATA/stats/
 for file in ~/.grass7/r.li/output/*; do
     val=$(cat $file | awk -F "|" '{ print $2 }') 

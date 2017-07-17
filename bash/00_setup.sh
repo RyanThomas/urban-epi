@@ -51,7 +51,7 @@ echo "Finished creating directories!
 If you wish to download the data run: ./00_setup.sh -data
 "
 echo ---------------------------------------------------------
-exit 0
+
 
 
 #######################################################################
@@ -66,7 +66,7 @@ elif [ "$1" = "-data" ] || [ "$dl" = "y" ]; then
 echo ------------------------------------------------------------------------------
 echo "Running download script. This will take a while. Why don't you grab a coffee in the Agora?"
 echo ------------------------------------------------------------------------------
-bash 02_download_data.sh
+bash $SH/02_download_data.sh
 echo
 echo "Download compete!"
 
