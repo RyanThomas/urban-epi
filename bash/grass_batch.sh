@@ -19,18 +19,20 @@ source source/bash/01_export_directory_tree.sh
 #---------------------------------------------------------------
 # START LOOP
 for city in ${VEC}/city_boundaries/*.shp ; do
-# Create name variable from file
+
+#------------------------------------------------------
+# Create variables from input file
 export NAME=$(echo `basename $city` | awk -F '.' '{ print $1 }')
 # Create bounds variable for g.region
 export BOUNDS=$(ogrinfo -al -so $city  | grep "Extent: " | awk '{ gsub ("[(),]", ""); print ("n="$3+2,"s="$6-2, "e="$5+2, "w="$2-2) }' )
 # create bounds for gdalwarp +2 degree buffer
 export gwarpBOUNDS=$(ogrinfo -al -so $city  | grep "Extent: " |  awk  '{ gsub ("[(),]", ""); print ($2-2" "$3-2" "$5+2" "$6+2) }' ) 
 
-# use the shapefile to create a raster landcover layer with the same extent
-# options:
-# -tr = destination resolution 
-# -te = destination bounding box, created by string manipulation on ogrinfo
-# -tap = match destination output grid to destination resolution provided in -tr 
+"""
+Use the shapefile to create a raster landcover layer with the same extent options:
+ -tr = destination resolution 
+ -te = destination bounding box, created by string manipulation on ogrinfo
+ -tap = match destination output grid to destination resolution provided in -tr """
 echo "---Writing  $RAS/glcf/landuse_cover_${NAME}.tif"
 gdalwarp -tr .004666666667 .0046666666667  -te $gwarpBOUNDS -tap -r average -overwrite $RAS/glcf/landuse_cover.vrt  $RAS/glcf/landuse_cover_${NAME}.tif 
 
@@ -98,7 +100,7 @@ g.remove -f type=raster,raster,raster name=extended_urban_area,urban,buffer --qu
 
 # Make a config file for grass. We determined the text for this configuration through the 
 # GUI ahead of time.
-mkdir -p ~/.grass7/r.li/
+mkdir -p $HOME/.grass7/r.li/
 echo "SAMPLINGFRAME 0|0|1|1
 SAMPLEAREA 0.0|0.0|1.0|1.0" > ~/.grass7/r.li/patch_index
 
@@ -111,19 +113,14 @@ r.li.patchnum       input=urban_agglomeration config=patch_index       output=${
 r.li.padrange       input=urban_agglomeration config=patch_index       output=${NAME}.padrange     --overwrite --quiet
 echo "Patch stats complete. Saved to ${NAME}.stat."
 
-
+#---------------------------------------------------
+# 
 mkdir -p $DIR/GTiffs/agglomeration
 r.out.gdal  input=urban_agglomeration output=GTiffs/agglomeration/${NAME}.tif format=GTiff --overwrite
-
-#rm -rf /dev/shm/${NAME}
-
-   
 
 #----------------------------------------------------------
 # AIR STATS
 echo "Calculating air statistics."
-
-#for city in ${VEC}/city_boundaries/*.shp ; do
 
 gdalwarp -tr .010000000 .010000000  -te $gwarpBOUNDS  -tap -r average $RAS/pm25/GlobalGWR_PM25_GL_201401_201412-RH35_NoDust_NoSalt-NoNegs.asc  $RAS/pm25/2014_${NAME}.tif -overwrite
 
@@ -133,8 +130,8 @@ gdalwarp -tr .010000000 .010000000  -te $gwarpBOUNDS  -tap -r average $RAS/pm25/
 
 echo "
 #################################
-Working on city:    $NAME 
-with bounds         $BOUNDS
+# Working on city:    $NAME #
+# with bounds         $BOUNDS #
 #################################
 "
 
@@ -155,21 +152,21 @@ v.rast.stats -c map=${NAME} raster=2015_${NAME} column_prefix=a  method=minimum,
 v.rast.stats -c map=${NAME} raster=2014_${NAME} column_prefix=a  method=minimum,maximum,average,median,stddev
 #NOTE: column names cannot be of length > 10.
 
-# options to do stats in grass, we decided to use R
-#echo "writing regressions"
-#r.regression.line mapx=meters_from_all_clumps@${NAME} mapy=air_pm25_2015@PERMANENT  >> data/stats/air/2015_${NAME}_reg.txt
-#r.regression.line mapx=meters_from_all_clumps@${NAME} mapy=air_pm25_2014@PERMANENT  >> data/stats/air/2014_${NAME}_reg.txt
-#r.stats.quantile -p base=meters_from_all_clumps_integers@${NAME} cover=air_pm25_2014@PERMANENT quantiles=10 bins=20
 
 echo 
 r.mapcalc " meters_from_all_clumps_int = round( meters_from_all_clumps@PERMANENT  ) "
 
 mkdir -p ${VEC}/air/
-echo "outputting csv"
+echo "out putting csv"
 mkdir -p ${DATA}/stats/air/
-v.out.ogr -c input=${NAME} layer=${NAME} output=${DATA}/stats/air/${NAME}.csv format="CSV"  --overwrite --quiet ; 
+echo writing CSV to file
+v.out.ogr -c --overwrite input=${NAME} layer=${NAME} output=${DATA}/stats/air/${NAME}.csv format="CSV" --quiet ; 
 done
 
+#---------------------------
+# END LOOP
+
+echo Cleaning up environment...
 rm -rf /dev/shm/rmt33_*
 
 mkdir -p $DATA/stats/
@@ -178,10 +175,7 @@ for file in ~/.grass7/r.li/output/*; do
     echo `basename $file`"."$val | awk   -F "." '{ print $1","$2","$3}';
     done > $DATA/stats/frag_stats.txt
 
-# R --vanilla --no-readline   -q  <<'EOF'
-# INDIR = Sys.getenv(c('INDIR'))
-
-R --vanilla <<EOF
+R --vanilla --no-readline   -q <<EOF
 require(dplyr)
 require(tidyr)
 require(magrittr)
