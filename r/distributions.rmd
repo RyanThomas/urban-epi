@@ -77,29 +77,24 @@ l <- read.table("~/projects/urban_epi/data/vector/air/london.txt", sep="|", head
   
   select(city, nbhd, p.r, inc.r, starts_with("air15")) %>%
   #arrange(inc.r) %>%
-  gather(indicator,value, c(air15.r, air15.g, air15.a)) %>%
-  ggplot(aes(x=inc.r, y=value)) + 
+  #gather(indicator,value, c(air15.r, air15.g, air15.a)) %>%
+  ggplot(aes(x=inc.r, y=air15.r)) + 
   geom_line(aes(colour=city)) +
-  #geom_abline(slope=1, intercept = 0) +
-  #xlab("Cumulative Percent of Poplation") +
-  #ylab("Total Amount of Exposure Accounted For") +
-  facet_grid(indicator ~ ., scales="free_y")
+  geom_abline(slope=1, intercept = 0) +
+   ggtitle("Distribution of Cumulative Air Pollution and Income") +
+  xlab("Cumulative % of Income") +
+  ylab("Cumulative % Exposure to PM2.5") 
+  
+  #facet_grid(indicator ~ ., scales="free_y")
 
 
 ```
 
-Here we are plotting each variable against the percentage of population. For income, the y axis would be the percentage of the total income accounted for by the corresponding percentage of population. For air15.r (average PM2.5 level in 2015), this is the percentage of the total exposure experienced by the corresponding percentage of the population. In the chart below, the x-axis represents the percentage of the total income earned (mean neighborhood income * neighborhood population). 
+Here we are plotting the cumulative exposure of PM2.5 by neighborhood against the cumulative income based on the mean neighborhood income. The x axis is the percentage of the total income accounted for by the ranked income of neighborhoods, from 0-100%. The y-axis represents PM2.5 levels in 2015 as the percentage of the total exposure experienced by the corresponding neighborhood. Each point on the line can be interpreted as the exposure to PM2.5 air pollution for the correpsonding percentage of the income earned in the same neighborhoods.
 
-We need to continue developing this because the difference between the back line (45 degree line) means different things depending on whther we're plotting "goods" like income or "bads" like air pollution. Ideally we would have the lines be on the same side of the line to mean the same thing, in terms of being normatively good or bad.
-
-Just to clarify, the green line above (corresponding to income) and the blue line below (corresponding to population) represent the same thing - income distribution. In the two graphs, the variables switched position, so it makes sense that the line is approximately mirrored.
-
-
-TODO: Make the generalized curve where the x-axis is the accumulation per capita;
-Make the Absolute curve where the x-axis is the deviation from the mean.
 
 ```{r}
-Atkinson(l$air15.r)
+#Atkinson(l$air15.r)
 ```
 
 
