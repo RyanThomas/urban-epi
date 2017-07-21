@@ -1,28 +1,25 @@
 #! /bin/bash
 
 # This bash script downloads all data for the Urban EPI from the source, as well as setting up the proper directory structure.
-
-
-echo  ---------------------------------------------
-echo  Set up Directory Structure
-echo ----------------------------------------------
-export DIR=~/projects/urban_epi
-export SH=$DIR/source/bash    
-export GRASSDB=$DIR/grassdb   
-export RAS=$DIR/data/raster    # all and only raster data goes here
-export VEC=$DIR/data/vector    # all and only vector data goes here.
-export TMP=$DIR/data/tmp       # TODO: is this needed?
+source source/bash/01_export_directory_tree.sh
+export DATA=/project/fas/hsu/rmt33/urban_epi/data   
+export RAS=${DATA}/raster    # all and only raster data goes here
+export VEC=${DATA}/vector    # all and only vector data goes here.
+export SEED=~/source/seed_data/
 
 
 rm -rf $TMP && mkdir -p $TMP  # Make a TMP folder to store all downloads
 
 # Land cover data from: ftp://ftp.glcf.umd.edu/glcf/Global_LNDCVR/UMD_TILES/Version_5.1/2012.01.01
 # MCD12 is the code for land cover data from NASA.z
+
 cd $TMP && wget -r ftp://ftp.glcf.umd.edu/glcf/Global_LNDCVR/UMD_TILES/Version_5.1/2012.01.01/*   # Download files into TMP (working dir)
 mkdir $RAS/glcf/ && mv $TMP/*/*/*/*/*/*/*/*.tif.gz  $RAS/glcf  # MOVE files from TMP to RAW/glcf 
+rm -rf $RAS/*/*/*/*/*/*/*/* 
 cd $RAS/glcf && find . -name '*.gz' -exec gunzip '{}' \;       # Unzip them from .gz format.
-cd $DIR 
 
+# Use GDAL command to make virtual raster (.vrt) from all the glcf tifs
+gdalbuildvrt -overwrite -a_srs "EPSG:4326"  $RAS/glcf/landuse_cover.vrt    $RAS/glcf/*.tif  
 
 # Protected Planet dot Net files used for biodiversity.
 # NOTE: We are not useing this protected planet shapefile for this. 

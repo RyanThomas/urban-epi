@@ -5,50 +5,15 @@
 # called bin. Downloaded data and analyzed
 # data goes in sibling directories.
 
-# Absolute path to parent directory
-echo
-echo "Please enter the absolute path to the parent directory. You may start from home directory with . Hint: This is the directory where you ran git clone. 
-WARNING: It must end with a slash ('/').
-"
+export DIR=$(echo $PWD)
 
-read DIR
-
-if [ ! -d "$DIR" ]; then
-  echo "Error: '$DIR' is not a directory, returning to prompt." >> /dev/stderr
-  read -p "Press enter to continue."
-  echo "Please enter the absolute path to the parent directory. You may start from home directory with '~/'. Hint: This is the directory where you ran git clone. 
-WARNING: It must end with a slash ('/').
-"
-    read DIR
-
-fi
-
-# Top level directories. These don't exist yet.
-export DATA=$DIR/data # $1
-export IND=$DIR/indicators # $2
-mkdir -p $DATA # make new directories
-mkdir -p $IND
-
-# Location of bash scripts
-export SH=$DIR/source/bash # $3
-mkdir -p $SH
-
-# Grass DB directories
-export GRASSDB=$DIR/grassdb # $4
-mkdir -p $GRASSDB
-
-# Raw data directories
-export RAS=$DIR/data/raster    # $5 all and only raster data goes here
-export VEC=$DIR/data/vector    # $6 all and only vector data goes here.
-export TMP=$DIR/data/tmp      # $7 used to download and unzip files.
-mkdir -p $RAS
-mkdir -p $VEC 
-mkdir -p $TMP
-
-export CITIES=$VEC/city_shapes
-mkdir $CITIES
-
-
-echo "Finished creating directories!
-"
-
+export DATA=/project/fas/hsu/rmt33/urban_epi/data
+export IND=${DIR}/indicators
+export SH=${DIR}/source/bash/
+export GRASSDB=~/scratch60/grassdb/
+export RAS=${DATA}/raster    # all and only raster data goes here
+export VEC=${DATA}/vector    # all and only vector data goes here.
+export TMP=${DATA}/tmp/      # used to download and unzip files.
+echo -------------------------
+echo Exporting variables done.
+echo -------------------------

@@ -1,5 +1,17 @@
 #! /bin/bash
 
+#############################################################################
+# AUTHOR(S):    Ryan Thomas, Yale University
+#               
+# PURPOSE:      This script allows a number of grass70 functions to be 
+#               performed on multiple files in different mapsets.
+#               variables:
+#               -bounds    bounding box
+#               -name      file name
+#               -location  GRASS location
+# 
+#############################################################################
+# This file simply calls the grass_patch_statistics file on a folder of shapefiles.
 
 
 source source/bash/01_export_directory_tree.sh
@@ -8,7 +20,7 @@ source source/bash/01_export_directory_tree.sh
 # START MASTER LOOP
 
 for city in ${VEC}/city_boundaries/*.shp ; do
-echo build_grass.sh $city >> commands.txt; done
+
 # Create name variable from file
 NAME=$(echo `basename $1` | awk -F '.' '{ print $1 }')
 # Create bounds variable for g.region

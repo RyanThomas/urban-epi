@@ -11,28 +11,9 @@
 #############################################################################
 
 # Because pwd is relative, this must be run from a specific directory.
-export DIR=$(echo $PWD)
-echo "You must run this from the 'parent', currently set to $DIR. Do you want to continue?
-(y/n)"
 
-
-read start
-if [ ! "$start" = "y" ]; then
-    exit 0
-fi
-
+source ~/source/bash/01_export_directory_tree.sh
 echo Skipping to $1.
-
-
-echo Exporting variables done.
-export DATA=~project/data/
-export IND=${DIR}/indicators
-export SH=${DIR}/source/bash/
-export GRASSDB=~scratch60/grassdb/
-export RAS=${DATA}/data/raster    # all and only raster data goes here
-export VEC=${DATA}/data/vector    # all and only vector data goes here.
-export TMP=${DATA}/data/tmp/      # used to download and unzip files.
-
 
 if [ "$1" = "-dir" ]; then
 
@@ -61,7 +42,7 @@ exit 0
 echo "Would you like to continue to DOWNLOAD the data?"
 read dl
 #######################################################################
-elif { [ "$1" = "-data" ] || [ "$dl" = "y" ] }; then
+elif  [ "$1" = "-data" ] || [ "$dl" = "y" ] ; then
 
 echo ------------------------------------------------------------------------------
 echo "Running download script. This will take a while. Why don't you grab a coffee in the Agora?"
@@ -73,33 +54,30 @@ echo "Download compete!"
 #######################################################################
 #
 # BUILD 
-#
 echo "Would you like to continue to BUILD the database?"
 read bd
 #######################################################################
-elif { [ "$1" = "-build" ] || [ "$bd" = "y" ] } ; then
-    if [ ! "$DIR" = "$PWD" ]; then
-        echo "Error: You are not in the home directory, returning to prompt." >> /dev/stderr
-        read -p "Press enter to continue."
-        echo "Please enter the absolute path to the parent directory. You may start from home directory with '~/'. Hint: This is the directory where you ran git clone."
-        read DIR
-    fi
+elif  [ "$1" = "-build" ] || [ "$bd" = "y" ]  ; then
+
 
 echo ---------------------------
 echo "building grass"
 echo -------------------------
 
+# mkdir -p ${VEC}/city_boundaries/ && cp ${DIR}/source/seed_data/* ${VEC}/city_boundaries/
 
-# reproject GHS data from Molleweide
-# first make a new location with the data as-is
-#grass -c -c -e $RAS/population/*.tif population
-
-mkdir -p ${VEC}/city_boundaries/ && cp ${DIR}/source/seed_data/* ${VEC}/city_boundaries/
-
-mkdir -p $GRASSDB && cd $GRASSDB
 # make vrt to create global location
+bash create_location.sh
+#grass70 -text -c   urban scratch60/grassdb/
+g.extension extension=v.in.osm
 
-grass -text -c -c $RAS/glcf/landuse_cover.vrt urban $GRASSDB
+#r.in.gdal for all global rasters to PERMANENT mapset. 
+
+r.external     input=$RAS/glcf/landuse_cover.vrt     output=landuse --overwrite
+r.external     input=$RAS/pm25/GlobalGWR_PM25_GL_201401_201412-RH35_NoDust_NoSalt-NoNegs.asc output=air_pm25_2014 --overwrite
+r.external     input=$RAS/pm25/GlobalGWR_PM25_GL_201501_201512-RH35_NoDust_NoSalt-NoNegs.asc output=air_pm25_2015 --overwrite 
+
+
 
 
 #######################################################################
@@ -109,20 +87,15 @@ echo "Would you like to continue to calculate FORM stats?"
 read fm
 #######################################################################
 
-elif { [ "$1" == "-form" ] || [ "$fm" = "y" ] }; then
-    if [ ! "$DIR" = "$PWD" ]; then
-        echo "Error: You are not in the home directory, returning to prompt." >> /dev/stderr
-        read -p "Press enter to continue."
-        echo "Please enter the absolute path to the parent directory. You may start from home directory with '~/'. Hint: This is the directory where you ran git clone."
-        read DIR
-    fi
+elif  [ "$1" == "-form" ] || [ "$fm" = "y" ] ; then
+    
 echo ---------------------------
 echo "analyzing urban form"
 echo -------------------------
 # Reading in patch analysis script from bin.
 rm -rf ~/.grass7/r.li/output/*
 export GRASS_BATCH_JOB="$SH/04_urban_form_analysis.sh"
-GISDBASE=$GRASSDB/urban
+
 grass -text -c $GRASSDB/urban/PERMANENT/
 unset GRASS_BATCH_JOB
 
@@ -135,13 +108,8 @@ echo "Would you like to continue to calculate AIR stats?"
 read ar
 
 #######################################################################
-elif { [ "$1" = "-air" ] || [ "$ar" = "y" ] }; then
-    if [ ! "$DIR" = "$PWD" ]; then
-        echo "Error: You are not in the home directory, returning to prompt." >> /dev/stderr
-        read -p "Press enter to continue."
-        echo "Please enter the absolute path to the parent directory. You may start from home directory with '~/'. Hint: This is the directory where you ran git clone."
-        read DIR
-    fi
+elif  [ "$1" = "-air" ] || [ "$ar" = "y" ] ; then
+   
 echo ---------------------------
 echo "analyzing air quality"
 echo -------------------------
@@ -161,13 +129,8 @@ echo "Would you like to continue to calculate TRANSPORT stats?"
 read tr
 
 #######################################################################
-elif { [ "$1" = "-trans" ] || [ "$tr" = "y" ] }; then
-    if [ ! "$DIR" = "$PWD" ]; then
-        echo "Error: You are not in the home directory, returning to prompt." >> /dev/stderr
-        read -p "Press enter to continue."
-        echo "Please enter the absolute path to the parent directory. You may start from home directory with '~/'. Hint: This is the directory where you ran git clone."
-        read DIR
-    fi
+elif  [ "$1" = "-trans" ] || [ "$tr" = "y" ] ; then
+   
 echo ---------------------------
 echo "analyzing transportation"
 echo -------------------------
@@ -188,13 +151,8 @@ echo "Would you like to continue to calculate GREENSPACE stats?"
 read gr
 
 #######################################################################
-elif { [ "$1" = "-green" ] || [ "$gr" = "y" ] }; then
-    if [ ! "$DIR" = "$PWD" ]; then
-        echo "Error: You are not in the home directory, returning to prompt." >> /dev/stderr
-        read -p "Press enter to continue."
-        echo "Please enter the absolute path to the parent directory. You may start from home directory with '~/'. Hint: This is the directory where you ran git clone."
-        read DIR
-    fi
+elif  [ "$1" = "-green" ] || [ "$gr" = "y" ] ; then
+    
 echo ---------------------------
 echo "analyzing greenspace"
 echo -------------------------
@@ -211,16 +169,9 @@ unset GRASS_BATCH_JOB
 unset name
 
 
-
-
 #######################################################################
-elif { [ "$1" = "-stats" ] || [ "$gr" = "y" ] }; then
-    if [ ! "$DIR" = "$PWD" ]; then
-        echo "Error: You are not in the home directory, returning to prompt." >> /dev/stderr
-        read -p "Press enter to continue."
-        echo "Please enter the absolute path to the parent directory. You may start from home directory with '~/'. Hint: This is the directory where you ran git clone."
-        read DIR
-    fi
+elif  [ "$1" = "-stats" ] || [ "$gr" = "y" ] ; then
+    
 echo ---------------------------
 echo "exporting stats to: ${DATA}stats/final/[city].csv"
 echo -------------------------

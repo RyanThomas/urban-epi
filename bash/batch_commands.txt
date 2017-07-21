@@ -1,0 +1,12 @@
+build_grass.sh /project/fas/hsu/rmt33/urban_epi/data/vector/city_boundaries/beijing.shp
+build_grass.sh /project/fas/hsu/rmt33/urban_epi/data/vector/city_boundaries/delhi.shp
+build_grass.sh /project/fas/hsu/rmt33/urban_epi/data/vector/city_boundaries/hochiminh.shp
+build_grass.sh /project/fas/hsu/rmt33/urban_epi/data/vector/city_boundaries/jakarta.shp
+build_grass.sh /project/fas/hsu/rmt33/urban_epi/data/vector/city_boundaries/london.shp
+build_grass.sh /project/fas/hsu/rmt33/urban_epi/data/vector/city_boundaries/losangeles.shp
+build_grass.sh /project/fas/hsu/rmt33/urban_epi/data/vector/city_boundaries/manila.shp
+build_grass.sh /project/fas/hsu/rmt33/urban_epi/data/vector/city_boundaries/mexico.shp
+build_grass.sh /project/fas/hsu/rmt33/urban_epi/data/vector/city_boundaries/newyork.shp
+build_grass.sh /project/fas/hsu/rmt33/urban_epi/data/vector/city_boundaries/saopaulo.shp
+build_grass.sh /project/fas/hsu/rmt33/urban_epi/data/vector/city_boundaries/seoul.shp
+build_grass.sh /project/fas/hsu/rmt33/urban_epi/data/vector/city_boundaries/tokyo.shp

@@ -1,4 +1,4 @@
-echo 'export PATH=$HOME/node-latest-install:$PATH' >> ~/.bashrc
+echo 'export PATH=$HOME/.npm-packages/bin:$PATH' >> ~/.bashrc
 . ~/.bashrc
 #mkdir -p ~/bin
 mkdir ~/node-latest-install

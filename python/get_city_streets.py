@@ -1,10 +1,11 @@
-#! /bin/bash/env python
+
+import os, sys
 
 import osmnx as ox, matplotlib.pyplot as plt
 from descartes import PolygonPatch
 from shapely.geometry import Polygon, MultiPolygon
 import json
-import os, sys
+
 from places import *
 
 data_path = os.path.dirname('../../data/vector/city_networks/')

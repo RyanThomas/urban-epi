@@ -1,5 +1,3 @@
-#! /bin/bash/env python
-
 import osmnx as ox, matplotlib.pyplot as plt
 from descartes import PolygonPatch
 from shapely.geometry import Polygon, MultiPolygon
@@ -38,7 +36,7 @@ for city in cities:
 
     path = os.path.join('data/vector/city_networks/', name)
     ensure_dir(path)
-    with open(path + '_stats.json', 'wb') as f:
+    with open(path + '_stats.json', 'w') as f:
         json.dump(stats, f)
         
 
