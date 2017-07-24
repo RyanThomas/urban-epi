@@ -8,7 +8,8 @@
 # To run all the scripts at once, run the commands in the taskfile in sequence.
 
 # Load the script with the command source and specify the grass database location_name and file to import. 
-# source create_location.sh /dev/shm location $HOME/ost4sem/exercise/basic_adv_gdalogr/input_proj.tif
+# e.g.: bash  source/bash/grass_batch_job.sh $GRASSDB location $SEED/beijing.shp
+
 
 export GISDBASE=$1
 echo "gisdbase: $GISDBASE"
