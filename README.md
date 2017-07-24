@@ -12,7 +12,7 @@ All the tools used in this analysis are open source, including the data, which a
 - AWK
 - NodeJS (for the `osmtogeojson` commandline tool)
 - Anaconda with Python 2 or 3 
-- Access to the data used in this application - see the Setup section below. Right now, the easiest way to do this is through the Yale High Performance Computing Cluster, where the data are available in the `/project/fas/hsu/rmt/urban_epi/data/` directory. 
+- Access to the data used in this application - see the Setup section below.
 
 ## Setup
 Importantly, the repo is intended to be cloned into a directory parent directory and renamed "source". In other words, the name of the directory once it is cloned should be "source", and it should be in a parent directory.
@@ -21,7 +21,7 @@ Importantly, the repo is intended to be cloned into a directory parent directory
 - `git clone http://github.com/ryanthomas/urban-epi.git source` to clone and rename the diectory.
 - `source source/bash/01_export_directory_tree.sh`
 #### Get data
-Once you have access to the cluster, you can run `scp [from] [to]`. <br>
+The data are available on the Yale High Performance Computing Cluster in the `/project/fas/hsu/rmt/urban_epi/data/` directory. Once you have access to the cluster, you can run `scp [from] [to]`. <br>
 For example: `scp netid@grace-next.hpc.yale.edu:/project/fas/hsu/rmt/urban_epi/data/ location/on/your/computer`. 
 
 ### Anaconda Installation
