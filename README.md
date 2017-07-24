@@ -18,7 +18,7 @@ For example: `scp netid@grace-next.hpc.yale.edu:/project/fas/hsu/rmt/urban_epi/d
 ## Setup
 Importantly, the repo is intended to be cloned into a directory parent directory and renamed "source". In other words, the name of the directory once it is cloned should be "source", and it should be in a parent directory.
 
-`mkdir urban_epi` This is to make the parent directory called 'urban_epi'. Feel free to call this something else. In my environment, it is called urban_epi.</br>
+`mkdir urban_epi/ && cd urban_epi ` This is to make the parent directory called 'urban_epi'. Feel free to call this something else. In my environment, it is called urban_epi.</br>
 `git clone http://github.com/ryanthomas/urban-epi.git source` to clone and rename the diectory.
 
 ## Anaconda Installation
