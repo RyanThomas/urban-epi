@@ -5,33 +5,25 @@ This is a research tool for global urban environmental assessment. The program t
 
 ## Requirements
 All the tools used in this analysis are open source, including the data, which are freely available on the internet.
-- Unix environment
+- Unix environment (e.g.[OSGeoLive in a virtual machine](https://live.osgeo.org/en/quickstart/virtualization_quickstart.html))
 - GDAL/OGR
 - GRASS 7.0 or GRASS 7.2 linked to the commandline call `grass`
-+ Extensions are loaded by the program: r.li, v.in.osm 
-- AWK or GAWK
-- NodeJS; osmtogeojson
-- python packages
-+ osmnx
-+ matplotlib
-+ descartes
-+ shapely.geometry
-+ geopandas
-+ rtree
-+ json
-+ os, sys, glob
-- Internet connection (downloads take a long time [>1 hour] on slow internet)
-
+  - Extensions are loaded by the program: r.li, v.in.osm 
+- AWK
+- NodeJS (for the `osmtogeojson` commandline tool)
+- Anaconda with Python 2 or 3
 
 ## Setup
-Importantly, the repo is intended to be cloned into a parent directory and renamed "source". The name of the directory once it is cloned should be "source".
+Importantly, the repo is intended to be cloned into a directory parent directory and renamed "source". In other words, the name of the directory once it is cloned should be "source", and it should be in a parent directory.
 
 `mkdir urban_epi` This is to make the parent directory called 'urban_epi'. Feel free to call this something else. In my environment, it is called urban_epi.</br>
 `git clone http://github.com/ryanthomas/urban-epi.git source` to clone and rename the diectory.
 
+I recommend installing conda, because it makes cloning the Python environment very easy. [See the page here for instructions.](https://www.continuum.io/downloads)
+
 The setup script takes one of three arguements: 
 | Command | Description |
-| --- | --- |
+| ----- | ----- |
 | `source/bash/00_setup.sh -dir` | To set up the directory structure |
 | `source/bash/00_setup.sh -data` | To download the data |
 | `source/bash/00_setup.sh -build` | To set up the grass database |
