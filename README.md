@@ -19,20 +19,16 @@ Importantly, the repo is intended to be cloned into a directory parent directory
 `mkdir urban_epi` This is to make the parent directory called 'urban_epi'. Feel free to call this something else. In my environment, it is called urban_epi.</br>
 `git clone http://github.com/ryanthomas/urban-epi.git source` to clone and rename the diectory.
 
+## Anaconda Installation
 I recommend installing conda, because it makes cloning the Python environment very easy. [See the page here for instructions.](https://www.continuum.io/downloads)
 
-The setup script takes one of three arguements: 
-| Command | Description |
-| ----- | ----- |
-| `source/bash/00_setup.sh -dir` | To set up the directory structure |
-| `source/bash/00_setup.sh -data` | To download the data |
-| `source/bash/00_setup.sh -build` | To set up the grass database |
-| `source/bash/00_setup.sh -form` | To calculate the urban form statistics |
-| `source/bash/00_setup.sh -air` | To calculat the air indicators |
-| `source/bash/00_setup.sh -trans` | To calculat the transportation indicators |
+Once you do this, you have to restart your terminal or type `. ~/.bashrc` to get access to the `conda` command.
 
-It is necessary that these be run one at a time in this order. </br>
-// Future developments may allow them to be run together with an `-all` flag.</br>
+### Create a new python environment using conda.
+`conda env create -f source/environment.yml`
+### Activate the new environment
+`source activate uepi`
+
 
 ## Details
 ### `source/bash/00_setup.sh -dir`</br>
