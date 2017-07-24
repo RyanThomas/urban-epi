@@ -19,7 +19,7 @@ Importantly, the repo is intended to be cloned into a directory parent directory
 #### Set up directory tree and get code
 - `mkdir urban_epi/ && cd urban_epi ` This is to make the parent directory called 'urban_epi'. Feel free to call this something else. In my environment, it is called urban_epi.</br>
 - `git clone http://github.com/ryanthomas/urban-epi.git source` to clone and rename the diectory.
-- `source source/01_export_directory_tree.sh`
+- `source source/bash/01_export_directory_tree.sh`
 #### Get data
 Once you have access to the cluster, you can run `scp [from] [to]`. <br>
 For example: `scp netid@grace-next.hpc.yale.edu:/project/fas/hsu/rmt/urban_epi/data/ location/on/your/computer`. 
