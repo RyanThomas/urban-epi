@@ -12,16 +12,19 @@ All the tools used in this analysis are open source, including the data, which a
 - AWK
 - NodeJS (for the `osmtogeojson` commandline tool)
 - Anaconda with Python 2 or 3 
-- Access to the data used in this application. Right now, the easiest way to do this is through the Yale High Performance Computing Cluster, where the data are available in the `/project/fas/hsu/rmt/urban_epi/data/` directory. Once you have access to the cluster, you can run `scp [from] [to]`. <br>
-For example: `scp netid@grace-next.hpc.yale.edu:/project/fas/hsu/rmt/urban_epi/data/ location/on/your/computer`. 
+- Access to the data used in this application - see the Setup section below. Right now, the easiest way to do this is through the Yale High Performance Computing Cluster, where the data are available in the `/project/fas/hsu/rmt/urban_epi/data/` directory. 
 
 ## Setup
 Importantly, the repo is intended to be cloned into a directory parent directory and renamed "source". In other words, the name of the directory once it is cloned should be "source", and it should be in a parent directory.
+#### Set up directory tree and get code
+- `mkdir urban_epi/ && cd urban_epi ` This is to make the parent directory called 'urban_epi'. Feel free to call this something else. In my environment, it is called urban_epi.</br>
+- `git clone http://github.com/ryanthomas/urban-epi.git source` to clone and rename the diectory.
+- `source source/01_export_directory_tree.sh`
+#### Get data
+Once you have access to the cluster, you can run `scp [from] [to]`. <br>
+For example: `scp netid@grace-next.hpc.yale.edu:/project/fas/hsu/rmt/urban_epi/data/ location/on/your/computer`. 
 
-`mkdir urban_epi/ && cd urban_epi ` This is to make the parent directory called 'urban_epi'. Feel free to call this something else. In my environment, it is called urban_epi.</br>
-`git clone http://github.com/ryanthomas/urban-epi.git source` to clone and rename the diectory.
-
-## Anaconda Installation
+### Anaconda Installation
 I recommend installing conda, because it makes cloning the Python environment very easy. [See the page here for instructions.](https://www.continuum.io/downloads)
 
 Once you do this, you have to restart your terminal or type `. ~/.bashrc` to get access to the `conda` command.
