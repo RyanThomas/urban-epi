@@ -8,10 +8,10 @@ All the tools used in this analysis are open source, including the data, which a
 - Unix environment (e.g.[OSGeoLive in a virtual machine](https://live.osgeo.org/en/quickstart/virtualization_quickstart.html))
 - GDAL/OGR
 - GRASS 7.0 or GRASS 7.2 linked to the commandline call `grass`
-- Extensions are loaded by the program: r.li, v.in.osm 
-- AWK or GAWK
+  - Extensions are loaded by the program: r.li, v.in.osm 
+- AWK
 - NodeJS (for the `osmtogeojson` commandline tool)
-- Anaconda
+- Anaconda with Python 2 or 3
 
 ## Setup
 Importantly, the repo is intended to be cloned into a parent directory and renamed "source". The name of the directory once it is cloned should be "source".
