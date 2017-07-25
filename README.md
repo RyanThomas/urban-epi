@@ -24,7 +24,7 @@ Importantly, the repo is intended to be cloned into a directory parent directory
 The data are available on the Yale High Performance Computing Cluster in the `/project/fas/hsu/rmt/urban_epi/data/` directory. Once you have access to the cluster, you can run `scp [from] [to]`. <br>
 For example: `scp netid@grace-next.hpc.yale.edu:/project/fas/hsu/rmt/urban_epi/data/ location/on/your/computer`. 
 
-### Anaconda Installation
+#### Anaconda Installation
 I recommend installing conda, because it makes cloning the Python environment very easy. [See the page here for instructions.](https://www.continuum.io/downloads)
 
 Once you do this, you have to restart your terminal or type `. ~/.bashrc` to get access to the `conda` command.
@@ -42,20 +42,3 @@ This will prompt you to enter the <i>absolute</i> path to your parent directory 
 - Type `echo $PWD` in your bash terminal, and</br>
 - Copy the output.
 
-### `source/bash/00_setup.sh -data` </br>
-This takes exceedingly long, since there are several global rasters involed. This is the main reason for splitting the process into multiple parts. Future iterations of this project may involve targeted downloading of only necessary files. 
-
-### `source/bash/00_setup.sh -build` </br>
-Reads in data to PERMANENT mapset.
-
-### `source/bash/00_setup.sh -air` </br>
-Calculates statistics for air quality.
-
-### `source/bash/00_setup.sh -form` </br>
-Calculates statistics for urban form.
-
-### `source/bash/00_setup.sh -trans` </br>
-Calculates statistics for transportation.
-
-### `source/bash/00_setup.sh -green` </br>
-Coming soon...
