@@ -13,8 +13,8 @@
 
 export GISDBASE=$1
 echo "gisdbase: $GISDBASE"
-export LOCATION=$2
-echo "location: $GISDBASE/$LOCATION$$"
+export LOCATION=$2$$
+echo "location: $GISDBASE/$LOCATION"
 export file=$3
 echo "input file: $file"
 # create the new grass database
