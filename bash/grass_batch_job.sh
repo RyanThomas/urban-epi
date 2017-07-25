@@ -8,12 +8,12 @@
 # To run all the scripts at once, run the commands in the taskfile in sequence.
 
 # Load the script with the command source and specify the grass database location_name and file to import. 
-# e.g.: bash  source/bash/grass_batch_job.sh $GRASSDB location $SEED/beijing.shp
+# e.g.: bash  source/bash/grass_batch_job.sh $GRASSDB location$$ $SEED/beijing.shp
 
 
 export GISDBASE=$1
 echo "gisdbase: $GISDBASE"
-export LOCATION=$2$$
+export LOCATION="$2$$"
 echo "location: $GISDBASE/$LOCATION"
 export file=$3
 echo "input file: $file"
@@ -31,13 +31,13 @@ cd $GISDBASE
 
 
 # create the new location and exit
-rm -rf $GRASSDB/location
-grass -e -text -c -c $SEED/beijing.shp   location  $GRASSDB
+rm -rf $GRASSDB/$LOCATION
+grass -e -text -c -c $SEED/beijing.shp   $LOCATION  $GRASSDB
 
 # set up grass variables
  
 echo "GISDBASE: $GRASSDB"   >  $HOME/.grass7/rc$$
-echo "LOCATION_NAME: location"                >> $HOME/.grass7/rc$$
+echo "LOCATION_NAME: $LOCATION"                >> $HOME/.grass7/rc$$
 echo "MAPSET: PERMANENT"                         >> $HOME/.grass7/rc$$
 echo "GUI: text"                                 >> $HOME/.grass7/rc$$
 echo "GRASS_GUI: wxpython"                       >> $HOME/.grass7/rc$$
