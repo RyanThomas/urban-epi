@@ -19,7 +19,7 @@ export file=$3
 echo "input file: $file"
 # create the new grass database
 
-GRASSDB=/home/user/projects/urban_epi/grassdb
+#GRASSDB=/home/user/projects/urban_epi/grassdb
 #INPUT=/home/user/ost4sem/exercise/basic_adv_gdalogr/fagus_sylvatica
 
 rm -rf $GRASSDB
@@ -27,12 +27,12 @@ mkdir $GRASSDB
 
 #cp -n $INPUT/2020_TSSP_IM-ENS-A2-SP20_43023435.tif  $GRASSDB
 
-cd $GRASSDB
+cd $GISDBASE
 
 
 # create the new location and exit
 rm -rf $GRASSDB/location
-grass70 -e -text -c -c $SEED/beijing.shp   location  $GRASSDB
+grass -e -text -c -c $SEED/beijing.shp   location  $GRASSDB
 
 # set up grass variables
  
