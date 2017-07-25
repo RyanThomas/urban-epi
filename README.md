@@ -11,28 +11,29 @@ All the tools used in this analysis are open source, including the data, which a
   - Extensions are loaded by the program: r.li, v.in.osm 
 - AWK
 - NodeJS (for the `osmtogeojson` commandline tool)
-- Anaconda with Python 2 or 3
+- Anaconda with Python 2 or 3 
+- Access to the data used in this application - see the Setup section below.
 
 ## Setup
 Importantly, the repo is intended to be cloned into a directory parent directory and renamed "source". In other words, the name of the directory once it is cloned should be "source", and it should be in a parent directory.
+#### Set up directory tree and get code
+- `mkdir urban_epi/ && cd urban_epi ` This is to make the parent directory called 'urban_epi'. Feel free to call this something else. In my environment, it is called urban_epi.</br>
+- `git clone http://github.com/ryanthomas/urban-epi.git source` to clone and rename the diectory.
+- `source source/bash/01_export_directory_tree.sh`
+#### Get data
+The data are available on the Yale High Performance Computing Cluster in the `/project/fas/hsu/rmt/urban_epi/data/` directory. Once you have access to the cluster, you can run `scp [from] [to]`. <br>
+For example: `scp netid@grace-next.hpc.yale.edu:/project/fas/hsu/rmt/urban_epi/data/ location/on/your/computer`. 
 
-`mkdir urban_epi` This is to make the parent directory called 'urban_epi'. Feel free to call this something else. In my environment, it is called urban_epi.</br>
-`git clone http://github.com/ryanthomas/urban-epi.git source` to clone and rename the diectory.
-
+#### Anaconda Installation
 I recommend installing conda, because it makes cloning the Python environment very easy. [See the page here for instructions.](https://www.continuum.io/downloads)
 
-The setup script takes one of three arguements: 
-| Command | Description |
-| ----- | ----- |
-| `source/bash/00_setup.sh -dir` | To set up the directory structure |
-| `source/bash/00_setup.sh -data` | To download the data |
-| `source/bash/00_setup.sh -build` | To set up the grass database |
-| `source/bash/00_setup.sh -form` | To calculate the urban form statistics |
-| `source/bash/00_setup.sh -air` | To calculat the air indicators |
-| `source/bash/00_setup.sh -trans` | To calculat the transportation indicators |
+Once you do this, you have to restart your terminal or type `. ~/.bashrc` to get access to the `conda` command.
 
-It is necessary that these be run one at a time in this order. </br>
-// Future developments may allow them to be run together with an `-all` flag.</br>
+### Create a new python environment using conda.
+`conda env create -f source/environment.yml`
+### Activate the new environment
+`source activate uepi`
+
 
 ## Details
 ### `source/bash/00_setup.sh -dir`</br>
@@ -41,20 +42,3 @@ This will prompt you to enter the <i>absolute</i> path to your parent directory 
 - Type `echo $PWD` in your bash terminal, and</br>
 - Copy the output.
 
-### `source/bash/00_setup.sh -data` </br>
-This takes exceedingly long, since there are several global rasters involed. This is the main reason for splitting the process into multiple parts. Future iterations of this project may involve targeted downloading of only necessary files. 
-
-### `source/bash/00_setup.sh -build` </br>
-Reads in data to PERMANENT mapset.
-
-### `source/bash/00_setup.sh -air` </br>
-Calculates statistics for air quality.
-
-### `source/bash/00_setup.sh -form` </br>
-Calculates statistics for urban form.
-
-### `source/bash/00_setup.sh -trans` </br>
-Calculates statistics for transportation.
-
-### `source/bash/00_setup.sh -green` </br>
-Coming soon...
