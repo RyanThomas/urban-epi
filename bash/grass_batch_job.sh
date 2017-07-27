@@ -2,11 +2,11 @@
 
 #r.in.gdal for all global rasters to PERMANENT mapset. 
 
-r.in.gdal   input=$RAS/glcf/landuse_cover_beijing.tif output=landuse --overwrite
+r.in.gdal     input=$RAS/glcf/landuse_cover_beijing.tif   output=landuse --overwrite
 r.in.gdal     input=$RAS/air_pm25_2014_${NAME}.tif output=air_pm25_2014 --overwrite
 r.in.gdal     input=$RAS/air_pm25_2015_${NAME}.tif output=air_pm25_2015 --overwrite 
 
-g.region   raster=landuse
+g.region      raster=landuse
 
 
 #------------------------------------------------------
@@ -87,8 +87,8 @@ r.li.padrange       input=urban_agglomeration config=patch_index       output=${
 echo "Patch stats complete. Saved to ${NAME}_[stat name]."
 
 # create new directory to store tifs
-mkdir -p $DIR/GTiffs/agglomeration
-r.out.gdal  input=urban_agglomeration output=GTiffs/agglomeration/$NAME format=GTiff --overwrite
+mkdir -p ${DIR}/GTiffs/agglomeration
+r.out.gdal  input=urban_agglomeration output=${DIR}/GTiffs/agglomeration/$NAME format=GTiff --overwrite
    
 mkdir -p $DATA/stats/
     for file in ~/.grass7/r.li/output/*; do
@@ -198,9 +198,6 @@ v.to.db map=nbhd_parks@${NAME} layer=1 qlayer=1 option=area units=meters columns
 v.centroids input=nbhd_parks output=park_cent option=add   --overwrite 
 v.vect.stats points=nbhd_parks areas=${NAME} type=centroid method=sum count_column="parks" points_column=area stats_column="park_area"   --overwrite 
 
-
-
-   
 #mkdir -p $DATA/stats/
 #for file in ${VEC}/air**.csv; do
     
@@ -223,7 +220,7 @@ plot(frag_stats_wd)
 dev.off()
 EOF
 
-g.extension extension=v.in.osm
+#g.extension extension=v.in.osm
 
 #Land Coverhttp://wiki.openstreetmap.org/wiki/OSM_file_formats
 
@@ -233,8 +230,8 @@ g.extension extension=v.in.osm
 #r.in.gdal     input=raw/gpw-v4-population-density-adjusted-to-2015-unwpp-country-totals_2015.tif   output=pop_density_2015
 #r.in.gdal     input=raw/Hansen_GFC2015_gain_00N_080W.tif   output=tree_gain
 #r.in.gdal     input=raw/Hansen_GFC2015_loss_00N_080W.tif   output=quito_tree_losss
-r.external     input=$RAS/glcf/landuse_cover.vrt     output=landuse --overwrite
-r.external     input=$RAS/pm25/GlobalGWR_PM25_GL_201401_201412-RH35_NoDust_NoSalt-NoNegs.asc output=air_pm25_2014 --overwrite
-r.external     input=$RAS/pm25/GlobalGWR_PM25_GL_201501_201512-RH35_NoDust_NoSalt-NoNegs.asc output=air_pm25_2015 --overwrite 
+#r.external     input=$RAS/glcf/landuse_cover.vrt     output=landuse --overwrite
+#r.external     input=$RAS/pm25/GlobalGWR_PM25_GL_201401_201412-RH35_NoDust_NoSalt-NoNegs.asc output=air_pm25_2014 --overwrite
+#r.external     input=$RAS/pm25/GlobalGWR_PM25_GL_201501_201512-RH35_NoDust_NoSalt-NoNegs.asc output=air_pm25_2015 --overwrite 
 cd $DIR
 
