@@ -1,105 +1,12 @@
 #!/bin/bash
 
-# Wite taskfile -- only for cluster
-#for city in ${VEC}/city_boundaries/*.shp ; do
-#echo build_grass.sh $city >> taskfile.txt; done
-
-# This script takes a single argument in the form of a filepath to a shapefile. 
-# To run all the scripts at once, run the commands in the taskfile in sequence.
-
-# Load the script with the command source and specify the grass database location_name and file to import. 
-# e.g.: bash  source/bash/grass_batch_job.sh $GRASSDB location$$ $SEED/beijing.shp
-
-
-export GISDBASE=$1
-echo "gisdbase: $GISDBASE"
-export LOCATION="$2$$"
-echo "location: $GISDBASE/$LOCATION"
-export file=$3
-echo "input file: $file"
-# create the new grass database
-
-#GRASSDB=/home/user/projects/urban_epi/grassdb
-#INPUT=/home/user/ost4sem/exercise/basic_adv_gdalogr/fagus_sylvatica
-
-rm -rf $GRASSDB
-mkdir $GRASSDB
-
-#cp -n $INPUT/2020_TSSP_IM-ENS-A2-SP20_43023435.tif  $GRASSDB
-
-cd $GISDBASE
-
-
-# create the new location and exit
-rm -rf $GRASSDB/$LOCATION
-grass -e -text -c -c $SEED/beijing.shp   $LOCATION  $GRASSDB
-
-# set up grass variables
- 
-echo "GISDBASE: $GRASSDB"   >  $HOME/.grass7/rc$$
-echo "LOCATION_NAME: $LOCATION"                >> $HOME/.grass7/rc$$
-echo "MAPSET: PERMANENT"                         >> $HOME/.grass7/rc$$
-echo "GUI: text"                                 >> $HOME/.grass7/rc$$
-echo "GRASS_GUI: wxpython"                       >> $HOME/.grass7/rc$$
-
-export GISBASE=/usr/lib/grass70
-export PATH=$PATH:$GISBASE/bin:$GISBASE/scripts
-export LD_LIBRARY_PATH="$GISBASE/lib"
-export GISRC=$HOME/.grass7/rc$$
-export GRASS_ADDON_BASE=$HOME/.grass7/addons
-export GRASS_LD_LIBRARY_PATH="$LD_LIBRARY_PATH"
-export PYTHONPATH="$GISBASE/etc/python:$PYTHONPATH"
-export MANPATH=$MANPATH:$GISBASE/man
-
-export GIS_LOCK=$$
-
-g.gisenv 
-
-# start to import all the data
-
-# Create name variable from file. Teh variable $1 in the bash portion of this line (not in AWK) 
-# represents the filepath for the shapefile you want to run.
-export NAME=$(echo `basename $3` | awk -F '.' '{ print $1 }')
-# Create bounds variable for g.region
-export BOUNDS=$(ogrinfo -al -so $3  | grep "Extent: " | awk '{ gsub ("[(),-]", ""); print ("n="$3+2,"s="$5-2, "e="$4+2, "w="$2-2) }' )  
-# Create bounds for gdalwarp +2 degree buffer
-export gwarpBOUNDS=$(ogrinfo -al -so $3  | grep "Extent: " |  awk  '{ gsub ("[(),-]", ""); print ($2-2" "$3-2" "$4+2" "$5+2) }' ) 
-
-echo "
-#################################
-Working on city:    $NAME      
-With extent:        $BOUNDS
-gdalwarp set to:    $gwarpBOUNDS
-#################################
-"
-
-# Use the shapefile to create a raster landcover layer with the same extent
-# As seen in the help documentation:
-#  -tr = destination resolution 
-#  -te = destination bounding box, created by string manipulation on ogrinfo
-#  -tap = match destination output grid to destination resolution provided in -tr
-
-echo "Writing  $RAS/glcf/landuse_cover_${NAME}.tif"
-# LAND USE: transform vrt to tif with correct projection and bounds of each city
-gdalwarp -tr .004666666667 .0046666666667  -te $gwarpBOUNDS -tap -r average -multi -wo NUM_THREADS=2 -overwrite $RAS/glcf/landuse_cover.vrt  $RAS/glcf/landuse_cover_${NAME}.tif 
-sleep 3
-# AIR QUALITY 2014
-gdalwarp -tr .004666666667 .0046666666667  -te $gwarpBOUNDS -tap -r average -multi -wo NUM_THREADS=2 -overwrite $RAS/pm25/GlobalGWR_PM25_GL_201401_201412-RH35_NoDust_NoSalt-NoNegs.asc  $RAS/air_pm25_2014_${NAME}.tif 
-sleep 3
-# AIR QUALITY 2015
-gdalwarp -tr .004666666667 .0046666666667  -te $gwarpBOUNDS -tap -r average -multi -wo NUM_THREADS=2 -overwrite $RAS/pm25/GlobalGWR_PM25_GL_201501_201512-RH35_NoDust_NoSalt-NoNegs.asc  $RAS/air_pm25_2015_${NAME}.tif
-sleep 3
-
-echo "---Creating location for $NAME"
-# call create location script using new tif as input -- for cluster only
-# source create_location_grass7.0.2-grace2.sh /dev/shm/ $NAME $RAS/glcf/landuse_cover_${NAME}.tif
-
-#g.extension extension=r.area
-
 #r.in.gdal for all global rasters to PERMANENT mapset. 
-r.external     input=$RAS/glcf/landuse_cover_${NAME}.tif output=landuse --overwrite
-r.external     input=$RAS/air_pm25_2014_${NAME}.tif output=air_pm25_2014 --overwrite
-r.external     input=$RAS/air_pm25_2015_${NAME}.tif output=air_pm25_2015 --overwrite 
+
+r.in.gdal   input=$RAS/glcf/landuse_cover_beijing.tif output=landuse --overwrite
+r.in.gdal     input=$RAS/air_pm25_2014_${NAME}.tif output=air_pm25_2014 --overwrite
+r.in.gdal     input=$RAS/air_pm25_2015_${NAME}.tif output=air_pm25_2015 --overwrite 
+
+g.region   raster=landuse
 
 
 #------------------------------------------------------
@@ -109,7 +16,6 @@ Calculating patch statistics for
 city:               $NAME      
 with extent:        $BOUNDS
 "
-
 
 # change landuse classifications so there are two values, 0 (for urban areas) and NULL
 r.reclass   input=landuse    output=urban   --overwrite rules=- << EOF
@@ -125,10 +31,11 @@ r.clump   -d  --overwrite   input=urban   output=all_clumps --quiet
 echo "Setting up urban mask."
 # 1. Select the big clumps
 # assign clumps with area > 4km^2 to 1, the rest to 0
-r.area input=all_clumps  output=large_clumps   --overwrite   lesser=8 --quiet   
+#g.extension extension=r.area
+r.area input=all_clumps  output=large_clumps   --overwrite   lesser=16 --quiet   
 
 # TODO: Is 8 right threshold? 
-# 2. Make a buffer of 20000 m
+# 2. Make a buffer of 2000 m
 # create raster of distances from large clumps
 r.grow.distance -m  input=large_clumps distance=meters_from_large_clumps  metric=geodesic --quiet --overwrite
 # reclassify to 1 (urban) and NULL
@@ -219,8 +126,14 @@ r.mapcalc " meters_from_all_clumps_int = round( meters_from_all_clumps@${NAME}  
 mkdir -p ${VEC}/air/
 echo "outputting csv"
 
+# TODO look up -c flag, which is giving a warning now.
 v.out.ogr -c input=${NAME} layer=${NAME} output=${DATA}stats/air/${NAME}.csv format="CSV"  --overwrite --quiet
 
+echo "
+-------------------------------------------
+Air stats done, working on transport for city:    $NAME    
+-------------------------------------------
+"
 
 ########################################################
 # Transportation statistics.
@@ -229,26 +142,21 @@ v.out.ogr -c input=${NAME} layer=${NAME} output=${DATA}stats/air/${NAME}.csv for
 echo "Calculating transport statistics."
 
 # TODO:should these cities be in a different folder? 
-transport_file=${VEC}networks/${NAME}/edges/edges.shp ; do
+transport_file=${VEC}/networks/${NAME}/edges/edges.shp 
 
-mkdir -p ${VEC}networks/${NAME}/edges_proj/ &&   rm -rf ${VEC}city_networks/${NAME}/edges_proj/*
-mkdir -p ${VEC}networks/${NAME}/nodes_proj/ &&   rm -rf ${VEC}city_networks/${NAME}/nodes_proj/*
+mkdir -p ${VEC}/networks/${NAME}/edges_proj/ &&   rm -rf ${VEC}/city_networks/${NAME}/edges_proj/*
+mkdir -p ${VEC}/networks/${NAME}/nodes_proj/ &&   rm -rf ${VEC}/city_networks/${NAME}/nodes_proj/*
 
-ogr2ogr  -t_srs EPSG:4326 ${VEC}city_networks/${NAME}/edges_proj/edges.shp ${VEC}networks/${NAME}/edges/edges.shp 
-ogr2ogr  -t_srs EPSG:4326 ${VEC}city_networks/${NAME}/nodes_proj/nodes.shp ${VEC}networks/${NAME}/nodes/nodes.shp
+ogr2ogr  -t_srs EPSG:4326 ${VEC}/networks/${NAME}/edges_proj/edges.shp ${VEC}/networks/${NAME}/edges/edges.shp 
+ogr2ogr  -t_srs EPSG:4326 ${VEC}/networks/${NAME}/nodes_proj/nodes.shp ${VEC}/networks/${NAME}/nodes/nodes.shp
 
-export int=${VEC}networks/${NAME}/nodes_proj/nodes.shp
-export net=${VEC}networks/${NAME}/edges_proj/edges.shp ; done
+export int=${VEC}/networks/${NAME}/nodes_proj/nodes.shp
+export net=${VEC}/networks/${NAME}/edges_proj/edges.shp 
 
-# Road Network stats here.
+# Road network stats here.
 
 # Public transportation stats here.
 
-echo "
--------------------------------------------
-Air stats done, working on transport for city:    $NAME    
--------------------------------------------
-"
 
 #g.mapset mapset=$NAME --quiet
 g.region vector=$NAME
