@@ -20,6 +20,19 @@ Importantly, the repo is intended to be cloned into a directory parent directory
 - `mkdir urban_epi/ && cd urban_epi ` This is to make the parent directory called 'urban_epi'. Feel free to call this something else. In my environment, it is called urban_epi.</br>
 - `git clone http://github.com/ryanthomas/urban-epi.git source` to clone and rename the diectory.
 - `source source/bash/01_export_directory_tree.sh`
+- Write a grass_variables.sh file to match your directory tree. You should definitely review the `$DATA` variable to ensure it is pointing to the right directory.
+
+`echo '#!/bin/bash <br>
+
+export DIR=$PWD # home or parent directory for the code base of the project<br>
+export DATA="/project/fas/hsu/rmt33/urban_epi/data"  # EDIT THIS LINE<br>
+export IND="${DIR}/indicators"<br>
+export SH="${DIR}/source/bash" <br>
+export GRASSDB="${DIR}/grassdb" <br>
+export RAS="${DATA}/raster"    <br>
+export VEC="${DATA}/vector"' > source/bash/grass_variables.sh`<br>
+
+
 #### Get data
 The data are available on the Yale High Performance Computing Cluster in the `/project/fas/hsu/rmt/urban_epi/data/` directory. Once you have access to the cluster, you can run `scp [from] [to]`. <br>
 For example: `scp netid@grace-next.hpc.yale.edu:/project/fas/hsu/rmt/urban_epi/data/ location/on/your/computer`. 
