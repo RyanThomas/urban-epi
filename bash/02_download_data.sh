@@ -1,25 +1,23 @@
 #! /bin/bash
 
 # This bash script downloads all data for the Urban EPI from the source, as well as setting up the proper directory structure.
-source source/bash/01_export_directory_tree.sh
-export DATA=/project/fas/hsu/rmt33/urban_epi/data   
-export RAS=${DATA}/raster    # all and only raster data goes here
-export VEC=${DATA}/vector    # all and only vector data goes here.
-export SEED=~/source/seed_data/
+export DIR=~/projects/urban_epi
+export SH=$DIR/source/bash    
+export GRASSDB=$DIR/grassdb   
+export RAS=$DIR/data/raster    # all and only raster data goes here
+export VEC=$DIR/data/vector    # all and only vector data goes here.
+export TMP=$DIR/data/tmp       # TODO: is this needed?
 
 
 rm -rf $TMP && mkdir -p $TMP  # Make a TMP folder to store all downloads
 
 # Land cover data from: ftp://ftp.glcf.umd.edu/glcf/Global_LNDCVR/UMD_TILES/Version_5.1/2012.01.01
 # MCD12 is the code for land cover data from NASA.z
-
 cd $TMP && wget -r ftp://ftp.glcf.umd.edu/glcf/Global_LNDCVR/UMD_TILES/Version_5.1/2012.01.01/*   # Download files into TMP (working dir)
 mkdir $RAS/glcf/ && mv $TMP/*/*/*/*/*/*/*/*.tif.gz  $RAS/glcf  # MOVE files from TMP to RAW/glcf 
-rm -rf $RAS/*/*/*/*/*/*/*/* 
 cd $RAS/glcf && find . -name '*.gz' -exec gunzip '{}' \;       # Unzip them from .gz format.
+cd $DIR 
 
-# Use GDAL command to make virtual raster (.vrt) from all the glcf tifs
-gdalbuildvrt -overwrite -a_srs "EPSG:4326"  $RAS/glcf/landuse_cover.vrt    $RAS/glcf/*.tif  
 
 # Protected Planet dot Net files used for biodiversity.
 # NOTE: We are not useing this protected planet shapefile for this. 
@@ -29,10 +27,8 @@ gdalbuildvrt -overwrite -a_srs "EPSG:4326"  $RAS/glcf/landuse_cover.vrt    $RAS/
 # Get city shape files using python osmnx script.
 # NOTE: The cities are hard-coded right now. 
 # TODO: Adapt this script so it takes a directory of shapefiles.
-echo  ---------------------------------------------
-echo  Use OSMnx to get street network
-echo ----------------------------------------------
-python source/python/get_city_streets.py
+
+python source/python/get_city_shapes.py
 
 
 
@@ -42,9 +38,8 @@ python source/python/get_city_streets.py
 
 #unzip -f gpw-v4-population-density-adjusted-to-2015-unwpp-country-totals-2015.zip  -d    pop_density 
 
-echo  ---------------------------------------------
-echo  Use OverpassAPI to get parks
-echo ----------------------------------------------
+
+#----------------------------------
 rm -rf ${VEC}/greenspaces/* # remove contents of greenspaces directory
 mkdir -p ${VEC}/greenspaces/ # make directory (-p flag means "if not exists")
 
@@ -108,15 +103,6 @@ gdal_polygonize.py -f 'ESRI Shapefile' -mask ${VEC}/greenspaces/${NAME}.tif ${VE
 # removes the DN attribute created by gdal_polygonize.py
 #ogrinfo ${NAME}.shp -sql "ALTER TABLE ${NAME} DROP COLUMN DN"
 rm -f ${VEC}/${NAME}.tif
-# It *may* be possible to completely flatten the osm file without this with PostGIS similar to the below line - not yet functional.
+# It *may* be possible to completely flatten the osm file without this.
 #ogr2ogr -f GeoJSON ${VEC}/greenspaces/${NAME}_dissolved.geojson ${VEC}/greenspaces/${NAME}.geojson -dialect sqlite -sql "SELECT ST_Union(geometry) FROM OGRGeoJSON"
 done
-
-
-echo  ---------------------------------------------
-echo  Use wget to download vonDonkelaar air data
-echo ----------------------------------------------
-mkdir -p ${RAS}/pm25
-wget -P ${RAS}/pm25 http://fizz.phys.dal.ca/~atmos/datasets/EST2016/GlobalGWR_PM25_GL_201401_201412-RH35_NoDust_NoSalt-NoNegs.asc.zip 
-wget -P ${RAS}/pm25 http://fizz.phys.dal.ca/~atmos/datasets/EST2016/GlobalGWR_PM25_GL_201501_201512-RH35_NoDust_NoSalt-NoNegs.asc.zip
-  
