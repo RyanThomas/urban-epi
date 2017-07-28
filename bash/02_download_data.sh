@@ -1,13 +1,13 @@
 #! /bin/bash
 
 # This bash script downloads all data for the Urban EPI from the source, as well as setting up the proper directory structure.
-export DIR=~/projects/urban_epi
+export DIR=~/projects/urban_epi # SOPHIE you may have to change this.
 export SH=$DIR/source/bash    
 export GRASSDB=$DIR/grassdb   
 export RAS=$DIR/data/raster    # all and only raster data goes here
 export VEC=$DIR/data/vector    # all and only vector data goes here.
 export TMP=$DIR/data/tmp       # TODO: is this needed?
-
+export SEED=$DIR/seed_data
 
 rm -rf $TMP && mkdir -p $TMP  # Make a TMP folder to store all downloads
 
@@ -39,11 +39,26 @@ python source/python/get_city_shapes.py
 #unzip -f gpw-v4-population-density-adjusted-to-2015-unwpp-country-totals-2015.zip  -d    pop_density 
 
 
-#----------------------------------
+#-------------------------------------------------------
+# Get data for greenspaces and open spaces
+
+# remove any temp files or previous downloads
 rm -rf ${VEC}/greenspaces/* # remove contents of greenspaces directory
 mkdir -p ${VEC}/greenspaces/ # make directory (-p flag means "if not exists")
 
-for file in ${VEC}/city_boundaries/*.shp; do # loop through shapefiles in city_boundaries
+
+for file in ${SEED}/*.shp; do # loop through shapefiles in city_boundaries
+
+# 1.
+# echo $file ; done
+
+#2. 
+# NAME=$(echo `basename $file` | awk -F '[._]' '{ print $1 }')
+# echo $NAME
+# bbox=$(ogrinfo -al $file  | grep "Extent: " | awk -F "[ (,)]" '{ print ($5-.1","$3-.1","$11+.1","$9+.1) }' )
+# echo $bbox ; done
+
+
 export NAME=$(echo `basename $file` | awk -F '[._]' '{ print $1 }') # make the simple name based on filenames
 export bbox=$(ogrinfo -al $file  | grep "Extent: " | awk -F "[ (,)]" '{ print ($5-.1","$3-.1","$11+.1","$9+.1) }' ) # write the bounding boxes
  
@@ -85,9 +100,9 @@ echo "[out:xml][timeout:900][maxsize:1073741824];((
     way["natural"="heath"](${bbox});
     rel["boundary"="national_park"](${bbox});
     way["boundary"="national_park"](${bbox}););
-  >;); out body; >; out;" >${VEC}/greenspaces/${NAME}_query.osm # save query to file for debugging/ troubleshooting/ record-keeping
+  >;); out body; >; out;" > ${VEC}/greenspaces/${NAME}_query.osm # save query to file for debugging/ troubleshooting/ record-keeping
   # then use the --post-file option to call in the query, like so:
-wget -O  ${VEC}/greenspaces/${NAME}.osm --post-file=${VEC}/greenspaces/${NAME}_query.osm "http://overpass-api.de/api/interpreter";
+wget -O  ${VEC}/greenspaces/${NAME}.osm --post-file=${VEC}/greenspaces/${NAME}_query.osm "http://overpass-api.de/api/interpreter"
 
 
 # OSM files are not simple to coerce into a usable format for GRASS or otherwise.
@@ -105,4 +120,4 @@ gdal_polygonize.py -f 'ESRI Shapefile' -mask ${VEC}/greenspaces/${NAME}.tif ${VE
 rm -f ${VEC}/${NAME}.tif
 # It *may* be possible to completely flatten the osm file without this.
 #ogr2ogr -f GeoJSON ${VEC}/greenspaces/${NAME}_dissolved.geojson ${VEC}/greenspaces/${NAME}.geojson -dialect sqlite -sql "SELECT ST_Union(geometry) FROM OGRGeoJSON"
-done
+; done

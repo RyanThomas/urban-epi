@@ -5,7 +5,7 @@ This is a research tool for global urban environmental assessment. The program t
 
 ## Requirements
 All the tools used in this analysis are open source, including the data, which are freely available on the internet.
-- Unix environment (e.g.[OSGeoLive in a virtual machine](https://live.osgeo.org/en/quickstart/virtualization_quickstart.html))
+- Unix environment (e.g. Any Linux or MacOS. If you're going to use a virtual machine, I suggest [OSGeoLive in a virtual machine](https://live.osgeo.org/en/quickstart/virtualization_quickstart.html)).
 - GDAL/OGR
 - GRASS 7.0 or GRASS 7.2 linked to the commandline call `grass`
   - Extensions are loaded by the program: r.li, v.in.osm 
