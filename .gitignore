@@ -52,5 +52,5 @@ air_files/
 *.jpg
 **/data/**
 ./python-notebooks/cache/*
-
+bash/grass_variables.sh
 
