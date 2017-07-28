@@ -29,17 +29,9 @@ export LOCATION="$2$$"
 echo "location: $GISDBASE/$LOCATION"
 export file=$3
 echo "input file: $file"
+
 # create the new grass database
-
-#GRASSDB=/home/user/projects/urban_epi/grassdb
-#INPUT=/home/user/ost4sem/exercise/basic_adv_gdalogr/fagus_sylvatica
-
-
-#rm -rf $GRASSDB
-#mkdir $GRASSDB
-
-#cp -n $INPUT/2020_TSSP_IM-ENS-A2-SP20_43023435.tif  $GRASSDB
-
+mkdir -p $GISDBASE
 cd $GISDBASE
 
 # create the new location and exit
@@ -91,21 +83,12 @@ gdalwarp set to:    $gwarpBOUNDS
 #  -te = destination bounding box, created by string manipulation on ogrinfo
 #  -tap = match destination output grid to destination resolution provided in -tr
 
-echo "Writing  $RAS/glcf/landuse_cover_${NAME}.tif"
-# LAND USE: transform vrt to tif with correct projection and bounds of each city
-#gdalwarp -te $gwarpBOUNDS -r average -multi -wo NUM_THREADS=2 -overwrite $RAS/glcf/landuse_cover.vrt  $RAS/glcf/landuse_cover_${NAME}.tif 
-# AIR QUALITY 2014
-#TODO: Make these air files into VRT.
-#gdalwarp  -te $gwarpBOUNDS -r average -multi -wo NUM_THREADS=2 -overwrite $RAS/pm25/GlobalGWR_PM25_GL_201401_201412-RH35_NoDust_NoSalt-NoNegs.asc  $RAS/air_pm25_2014_${NAME}.tif 
-# AIR QUALITY 2015
-#gdalwarp  -te $gwarpBOUNDS -r average -multi -wo NUM_THREADS=2 -overwrite $RAS/pm25/GlobalGWR_PM25_GL_201501_201512-RH35_NoDust_NoSalt-NoNegs.asc  $RAS/air_pm25_2015_${NAME}.tif
 
 echo "---Creating location for $NAME"
 # call create location script using new tif as input -- for cluster only
 # source create_location_grass7.0.2-grace2.sh /dev/shm/ $NAME $RAS/glcf/landuse_cover_${NAME}.tif
 
+
 export GRASS_BATCH_JOB=$SH/grass_batch_job.sh
-
 grass -text $GRASSDB/$LOCATION/PERMANENT
-
 unset GRASS_BATCH_JOB

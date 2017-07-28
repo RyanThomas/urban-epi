@@ -8,6 +8,16 @@
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=email
 
+export DIR=$PWD
+
+export DATA="${DIR}/data" 
+export IND="${DIR}/indicators"
+export SH="${DIR}/source/bash" 
+export GRASSDB="${DIR}/grassdb" 
+export RAS="${DATA}/raster"    
+export VEC="${DATA}/vector"   
+export SEED="${DIR}/source/seed_data"
+
 source/bash/task_manager.sh $GRASSDB location /home/user/projects/urban_epi/source/seed_data/beijing.shp
 source/bash/task_manager.sh $GRASSDB location /home/user/projects/urban_epi/source/seed_data/delhi.shp
 source/bash/task_manager.sh $GRASSDB location /home/user/projects/urban_epi/source/seed_data/hochiminh.shp
