@@ -18,14 +18,14 @@ All the tools used in this analysis are open source, including the data, which a
 Importantly, the repo is intended to be cloned into a directory parent directory and renamed "source". In other words, the name of the directory once it is cloned should be "source", and it should be in a parent directory.
 #### Set up directory tree and get code
 - `git clone http://github.com/ryanthomas/urban-epi.git` to clone and rename the diectory.
-- Run `echo '#!/bin/bash
-export DIR=$PWD
-export DATA=${DIR}/data
-export IND="${DIR}/indicators"
-export SH="${DIR}/src/bash"
-export GRASSDB="${DIR}/grassdb"
-export RAS="${DATA}/raster"
-export VEC="${DATA}/vector"' > src/bash/grass_variables.sh
+- Run `echo '#!/bin/bash <br>
+export DIR=$PWD<br>
+export DATA=${DIR}/data<br>
+export IND="${DIR}/indicators"<br>
+export SH="${DIR}/src/bash"<br>
+export GRASSDB="${DIR}/grassdb"<br>
+export RAS="${DATA}/raster"<br>
+export VEC="${DATA}/vector"' > src/bash/grass_variables.sh<br>
 source src/bash/grass_variables.sh`
 
 #### Get data
