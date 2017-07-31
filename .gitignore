@@ -44,7 +44,6 @@ Thumbs.db
 
 # Custom #
 ##########
-air_files/
 *.tif
 *.vrt
 *.gz
@@ -57,3 +56,8 @@ air_files/
 ./bash/enter_grass7.0.2-grace2.sh
 **#**
 
+data/**
+cache/**
+grassdb/**
+GTiffs/**
+imgs/**
