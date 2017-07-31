@@ -1,7 +1,7 @@
 Urban Environmental Assessment Tool
 ==================================
 
-This is a research tool for global urban environmental assessment. The program takes as an input a directory (file folder) of shapefiles with income and population data. Based on these shapefiles, the program will produce estimates for air quality, transportation, urban form, and green space. To replicate this analysis for a city you have in mind, begin by cloning the repo with `git clone http://github.com/ryanthomas/urban_epi.git` and overwrite the contents of the `city_boundary` folder with the shapefile for your city. Then follow the instructions below.
+This is a research tool for global urban environmental assessment. The program takes as an input a directory (file folder) of shapefiles with income and population data. Based on these shapefiles, the program will produce estimates for air quality, transportation, urban form, and green space. To replicate this analysis for a city you have in mind, begin by cloning the repo with `git clone http://github.com/ryanthomas/urban-epi.git` and overwrite the contents of the `city_boundary` folder with the shapefile for your city. Then follow the instructions below.
 
 ## Requirements
 All the tools used in this analysis are open source, including the data, which are freely available on the internet.
