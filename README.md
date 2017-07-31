@@ -20,7 +20,7 @@ This repo contains only the code for an application that builds a database.
 - Run `git clone http://github.com/ryanthomas/urban-epi.git` to clone and rename the diectory.
 - Run `echo '#!/bin/bash <br>
 export DIR=$PWD # home or parent directory for the code base of the project<br>
-export DATA="/project/fas/hsu/rmt33/urban-epi/data" <br>
+export DATA="/project/fas/hsu/rmt33/urban-epi/data" # CHANGE ME! <br>
 export IND="${DIR}/indicators"<br>
 export SH="${DIR}/src/bash" <br>
 export GRASSDB="${DIR}/grassdb" <br>
