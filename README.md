@@ -17,8 +17,7 @@ All the tools used in this analysis are open source, including the data, which a
 ## Setup
 Importantly, the repo is intended to be cloned into a directory parent directory and renamed "source". In other words, the name of the directory once it is cloned should be "source", and it should be in a parent directory.
 #### Set up directory tree and get code
-- `mkdir urban_epi/ && cd urban_epi ` This is to make the parent directory called 'urban_epi'. Feel free to call this something else. In my environment, it is called urban_epi.</br>
-- `git clone http://github.com/ryanthomas/urban-epi.git source` to clone and rename the diectory.
+- `git clone http://github.com/ryanthomas/urban-epi.git` to clone and rename the diectory.
 - `source source/bash/01_export_directory_tree.sh`
 - Write a grass_variables.sh file to match your directory tree. You should definitely review the `$DATA` variable to ensure it is pointing to the right directory.
 
