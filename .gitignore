@@ -54,3 +54,9 @@ air_files/
 ./python-notebooks/cache/*
 bash/grass_variables.sh
 
+data/**
+cache/**
+grassdb/**
+GTiffs/**
+imgs/**
+indicators/**
