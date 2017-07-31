@@ -5,17 +5,17 @@ This is a research tool for global urban environmental assessment. The program t
 
 ## Requirements
 All the tools used in this analysis are open source, including the data, which are freely available on the internet.
-- Unix environment (e.g. Any Linux or MacOS. If you're going to use a virtual machine, I suggest [OSGeoLive in a virtual machine](https://live.osgeo.org/en/quickstart/virtualization_quickstart.html)).
+- Unix environment (e.g. the Yale HPC, any Linux or MacOS. If you're going to use a virtual machine on your laptop, I suggest [OSGeoLive in a virtual machine](https://live.osgeo.org/en/quickstart/virtualization_quickstart.html)). Allocate at least 4GB RAM and 50GB storage.
 - GDAL/OGR
-- GRASS 7.0 or GRASS 7.2 linked to the commandline call `grass`
-  - Extensions are loaded by the program: r.li, v.in.osm 
+- GRASS 7.0 or GRASS 7.2 (linked to the commandline call `grass`)
+  - GRASS extensions installed prior to running the program: r.li, v.in.osm.
 - AWK
-- NodeJS (for the `osmtogeojson` commandline tool)
-- Anaconda with Python 2 or 3 
-- Access to the data used in this application - see the Setup section below.
+- NodeJS (After downloading OSM data, we use the `osmtogeojson` commandline tool.)
+- Anaconda with Python 2 or 3
+- Access to the data used in this application - see the <b>Setup</b> section below.
 
 ## Setup
-Importantly, the repo is intended to be cloned into a directory parent directory and renamed "source". In other words, the name of the directory once it is cloned should be "source", and it should be in a parent directory.
+This repo contains only the code for an application that builds a database. For this reason, the data are stored outside the git repo, but you should probably keep them in the same <i>parent directory</i>. The repo is intended to be cloned into a <i>parent directory</i> and renamed "source".
 #### Set up directory tree and get code
 - From your home (`~/`) directory, run `mkdir urban_epi/ && cd urban_epi`. This is to make the 'parent directory' called 'urban_epi'. Feel free to call this something else. In my environment, it is called urban_epi.</br>
 - Run `git clone http://github.com/ryanthomas/urban-epi.git source` to clone and rename the diectory.
@@ -57,8 +57,7 @@ From your <i>parent directory</i>, run `source/bash/grass_batch_script.sh grassd
 
 ### From the cluster - in parellel
 #### Install dead Simple Queue from the YCRC github page. 
-From your <i>parent directory</i>:
-- run `git clone https://github.com/ycrc/dSQ.git`
+From your <i>parent directory</i>, run `git clone https://github.com/ycrc/dSQ.git`
 
 #### Run the batch script
 - run `source/bash/write_jobs.sh` to write a tasks.txt.
