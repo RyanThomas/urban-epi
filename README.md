@@ -5,64 +5,65 @@ This is a research tool for global urban environmental assessment. The program t
 
 ## Requirements
 All the tools used in this analysis are open source, including the data, which are freely available on the internet.
-- Unix environment
+- Unix environment (e.g. Any Linux or MacOS. If you're going to use a virtual machine, I suggest [OSGeoLive in a virtual machine](https://live.osgeo.org/en/quickstart/virtualization_quickstart.html)).
 - GDAL/OGR
 - GRASS 7.0 or GRASS 7.2 linked to the commandline call `grass`
-+ Extensions are loaded by the program: r.li, v.in.osm 
-- AWK or GAWK
-- NodeJS; osmtogeojson
-- python packages
-+ osmnx
-+ matplotlib
-+ descartes
-+ shapely.geometry
-+ geopandas
-+ rtree
-+ json
-+ os, sys, glob
-- Internet connection (downloads take a long time [>1 hour] on slow internet)
-
+  - Extensions are loaded by the program: r.li, v.in.osm 
+- AWK
+- NodeJS (for the `osmtogeojson` commandline tool)
+- Anaconda with Python 2 or 3 
+- Access to the data used in this application - see the Setup section below.
 
 ## Setup
-Importantly, the repo is intended to be cloned into a parent directory and renamed "source". The name of the directory once it is cloned should be "source".
+Importantly, the repo is intended to be cloned into a directory parent directory and renamed "source". In other words, the name of the directory once it is cloned should be "source", and it should be in a parent directory.
+#### Set up directory tree and get code
+- From your home (`~/`) directory, run `mkdir urban_epi/ && cd urban_epi`. This is to make the 'parent directory' called 'urban_epi'. Feel free to call this something else. In my environment, it is called urban_epi.</br>
+- Run `git clone http://github.com/ryanthomas/urban-epi.git source` to clone and rename the diectory.
+- Run `source source/bash/01_export_directory_tree.sh`
 
-`mkdir urban_epi` This is to make the parent directory called 'urban_epi'. Feel free to call this something else. In my environment, it is called urban_epi.</br>
-`git clone http://github.com/ryanthomas/urban-epi.git source` to clone and rename the diectory.
+`echo '#!/bin/bash <br>
 
-The setup script takes one of three arguements: 
-| Command | Description |
-| --- | --- |
-| `source/bash/00_setup.sh -dir` | To set up the directory structure |
-| `source/bash/00_setup.sh -data` | To download the data |
-| `source/bash/00_setup.sh -build` | To set up the grass database |
-| `source/bash/00_setup.sh -form` | To calculate the urban form statistics |
-| `source/bash/00_setup.sh -air` | To calculat the air indicators |
-| `source/bash/00_setup.sh -trans` | To calculat the transportation indicators |
+export DIR=$PWD # home or parent directory for the code base of the project<br>
+export DATA="/project/fas/hsu/rmt33/urban_epi/data" <br>
+export IND="${DIR}/indicators"<br>
+export SH="${DIR}/source/bash" <br>
+export GRASSDB="${DIR}/grassdb" <br>
+export RAS="${DATA}/raster"    <br>
+export VEC="${DATA}/vector"' > source/bash/grass_variables.sh`<br>
 
-It is necessary that these be run one at a time in this order. </br>
-// Future developments may allow them to be run together with an `-all` flag.</br>
+#### Get data
+The data are available on the Yale High Performance Computing Cluster in the `/project/fas/hsu/rmt/urban_epi/data/` directory. Once you have access to the cluster, you can run `scp [from] [to]`. <br>
+For example: `scp netid@grace-next.hpc.yale.edu:/project/fas/hsu/rmt/urban_epi/data/ location/on/your/computer`.
+Run this from your Mac command line when you are NOT connected to the cluster. Windows users should look up the appropriate command on Yale's HPC help site.
 
-## Details
-### `source/bash/00_setup.sh -dir`</br>
-This will prompt you to enter the <i>absolute</i> path to your parent directory (chosen above). Use the following steps to get the absolute path to your parent directory. You will need to do this outside the script's dialogue (i.e. before typing the above script). You can also exit once you start without breaking anything.</br> 
-- Enter the directory from a bash terminal. If you haven't moved, do nothing - you're already there. </br> 
-- Type `echo $PWD` in your bash terminal, and</br>
-- Copy the output.
+#### Anaconda Installation
+I recommend installing conda, because it makes cloning the Python environment very easy. [See the page here for instructions.](https://www.continuum.io/downloads)
 
-### `source/bash/00_setup.sh -data` </br>
-This takes exceedingly long, since there are several global rasters involed. This is the main reason for splitting the process into multiple parts. Future iterations of this project may involve targeted downloading of only necessary files. 
+Once you do this, you have to restart your terminal or type `. ~/.bashrc` to get access to the `conda` command.
 
-### `source/bash/00_setup.sh -build` </br>
-Reads in data to PERMANENT mapset.
+##### Create a new python environment using conda.
+`conda env create -f source/environment.yml`
+##### Activate the new environment
+`source activate uepi`
 
-### `source/bash/00_setup.sh -air` </br>
-Calculates statistics for air quality.
+#### Install Node and NPM
+This is only relevant if you are going to be downloading data from OSM using their API. The OSM extracts are saved in a file format that we convert to GeoJSON via a command line utility available through Node - osmtogeojson. Node installs take a little time to run, but are pretty straightforward on a Mac. 
 
-### `source/bash/00_setup.sh -form` </br>
-Calculates statistics for urban form.
+If you are running a download script from the cluster, run the command line script `bash source/install_node_on_cluster.sh`
 
-### `source/bash/00_setup.sh -trans` </br>
-Calculates statistics for transportation.
+## Running the script
+### From your laptop/VM
+From your <i>parent directory</i>, run `source/bash/grass_batch_script.sh grassdb/urban [path/to/georeferenced_file]`
 
-### `source/bash/00_setup.sh -green` </br>
-Coming soon...
+### From the cluster - in parellel
+#### Install dead Simple Queue from the YCRC github page. 
+From your <i>parent directory</i>:
+- run `git clone https://github.com/ycrc/dSQ.git`
+
+#### Run the batch script
+- run `source/bash/write_jobs.sh` to write a tasks.txt.
+- run `dSQ/dSQ --taskfile tasks.txt > tasks.sh`
+- run `sbatch tasks.sh`
+
+To come!: To run all these scripts at once, run `source/bash/run_scripts_in_parallel.sh`.
+
