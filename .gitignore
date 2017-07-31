@@ -50,7 +50,6 @@ air_files/
 *.gz
 *.kate-swp
 *.jpg
-**/data/**
 ./python-notebooks/cache/*
 bash/grass_variables.sh
 
