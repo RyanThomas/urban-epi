@@ -15,23 +15,22 @@ All the tools used in this analysis are open source, including the data, which a
 - Access to the data used in this application - see the <b>Setup</b> section below.
 
 ## Setup
-This repo contains only the code for an application that builds a database. For this reason, the data are stored outside the git repo, but you should probably keep them in the same <i>parent directory</i>. The repo is intended to be cloned into a <i>parent directory</i> and renamed "source".
+This repo contains only the code for an application that builds a database.
 #### Set up directory tree and get code
-- From your home (`~/`) directory, run `mkdir urban_epi/ && cd urban_epi`. This is to make the 'parent directory' called 'urban_epi'. Feel free to call this something else. In my environment, it is called urban_epi.</br>
-- Run `git clone http://github.com/ryanthomas/urban-epi.git source` to clone and rename the diectory.
+- Run `git clone http://github.com/ryanthomas/urban-epi.git` to clone and rename the diectory.
 - Run `echo '#!/bin/bash <br>
 export DIR=$PWD # home or parent directory for the code base of the project<br>
-export DATA="/project/fas/hsu/rmt33/urban_epi/data" <br>
+export DATA="/project/fas/hsu/rmt33/urban-epi/data" <br>
 export IND="${DIR}/indicators"<br>
-export SH="${DIR}/source/bash" <br>
+export SH="${DIR}/src/bash" <br>
 export GRASSDB="${DIR}/grassdb" <br>
 export RAS="${DATA}/raster"    <br>
-export VEC="${DATA}/vector"' > source/bash/grass_variables.sh<br>
-source source/bash/grass_variables.sh
+export VEC="${DATA}/vector"' > src/bash/grass_variables.sh<br>
+source src/bash/grass_variables.sh
 
 
 #### Get data
-The data are available on the Yale High Performance Computing Cluster in the `/project/fas/hsu/rmt/urban_epi/data/` directory. Once you have access to the cluster, you can run `scp [from] [to]`. <br>
+The data are available on the Yale High Performance Computing Cluster in the `/project/fas/hsu/rmt/urban-epi/data/` directory. Once you have access to the cluster, you can run `scp [from] [to]`. <br>
 For example: `scp netid@grace-next.hpc.yale.edu:/project/fas/hsu/rmt/urban_epi/data/ location/on/your/computer`.
 Run this from your Mac command line when you are NOT connected to the cluster. Windows users should look up the appropriate command on Yale's HPC help site.
 
@@ -48,20 +47,20 @@ Once you do this, you have to restart your terminal or type `. ~/.bashrc` to get
 #### Install Node and NPM
 This is only relevant if you are going to be downloading data from OSM using their API. The OSM extracts are saved in a file format that we convert to GeoJSON via a command line utility available through Node - osmtogeojson. Node installs take a little time to run, but are pretty straightforward on a Mac. 
 
-If you are running a download script from the cluster, run the command line script `bash source/install_node_on_cluster.sh`
+If you are running a download script from the cluster, run the command line script `bash src/install_node_on_cluster.sh`
 
 ## Running the script
 ### From your laptop/VM
-From your <i>parent directory</i>, run `source/bash/grass_batch_script.sh grassdb/urban [path/to/georeferenced_file]`
+From your <i>parent directory</i>, run `src/bash/grass_batch_script.sh grassdb/urban [path/to/georeferenced_file]`
 
 ### From the cluster - in parellel
 #### Install dead Simple Queue from the YCRC github page. 
 From your <i>parent directory</i>, run `git clone https://github.com/ycrc/dSQ.git`
 
 #### Run the batch script
-- run `source/bash/write_jobs.sh` to write a tasks.txt.
+- run `src/bash/write_jobs.sh` to write a tasks.txt.
 - run `dSQ/dSQ --taskfile tasks.txt > tasks.sh`
 - run `sbatch tasks.sh`
 
-To come!: To run all these scripts at once, run `source/bash/run_scripts_in_parallel.sh`.
+To come!: To run all these scripts at once, run `src/bash/run_scripts_in_parallel.sh`.
 
