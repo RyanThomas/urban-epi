@@ -1,0 +1,3 @@
+COMMAND: v.in.ogr --overwrite input="/home/user/projects/urban_epi/source/seed_data/beijing.shp" min_area=0.0001 snap=10e-7
+GISDBASE: /home/user/projects/urban_epi/grassdb
+LOCATION: location28661 MAPSET: PERMANENT USER: user DATE: Fri Jul 28 08:30:25 2017
