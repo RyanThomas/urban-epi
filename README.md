@@ -19,17 +19,16 @@ This repo contains only the code for an application that builds a database. For 
 #### Set up directory tree and get code
 - From your home (`~/`) directory, run `mkdir urban_epi/ && cd urban_epi`. This is to make the 'parent directory' called 'urban_epi'. Feel free to call this something else. In my environment, it is called urban_epi.</br>
 - Run `git clone http://github.com/ryanthomas/urban-epi.git source` to clone and rename the diectory.
-- Run `source source/bash/01_export_directory_tree.sh`
-
-`echo '#!/bin/bash <br>
-
+- Run `echo '#!/bin/bash <br>
 export DIR=$PWD # home or parent directory for the code base of the project<br>
 export DATA="/project/fas/hsu/rmt33/urban_epi/data" <br>
 export IND="${DIR}/indicators"<br>
 export SH="${DIR}/source/bash" <br>
 export GRASSDB="${DIR}/grassdb" <br>
 export RAS="${DATA}/raster"    <br>
-export VEC="${DATA}/vector"' > source/bash/grass_variables.sh`<br>
+export VEC="${DATA}/vector"' > source/bash/grass_variables.sh<br>
+source source/bash/grass_variables.sh
+
 
 #### Get data
 The data are available on the Yale High Performance Computing Cluster in the `/project/fas/hsu/rmt/urban_epi/data/` directory. Once you have access to the cluster, you can run `scp [from] [to]`. <br>
