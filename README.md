@@ -28,7 +28,6 @@ export RAS="${DATA}/raster"    <br>
 export VEC="${DATA}/vector"' > src/bash/grass_variables.sh<br>
 source src/bash/grass_variables.sh
 
-
 #### Get data
 The data are available on the Yale High Performance Computing Cluster in the `/project/fas/hsu/rmt/urban-epi/data/` directory. Once you have access to the cluster, you can run `scp [from] [to]`. <br>
 For example: `scp netid@grace-next.hpc.yale.edu:/project/fas/hsu/rmt/urban_epi/data/ location/on/your/computer`.
@@ -48,6 +47,12 @@ Once you do this, you have to restart your terminal or type `. ~/.bashrc` to get
 This is only relevant if you are going to be downloading data from OSM using their API. The OSM extracts are saved in a file format that we convert to GeoJSON via a command line utility available through Node - osmtogeojson. Node installs take a little time to run, but are pretty straightforward on a Mac. 
 
 If you are running a download script from the cluster, run the command line script `bash src/install_node_on_cluster.sh`
+
+## Adding Data
+New cities can be added by putting a shapefile in the seed_data folder. It must be a shape file of the neighborhoods and have the proper fields in the attribute table:
+- population
+- per capita income*
+* This may change.
 
 ## Running the script
 ### From your laptop/VM
