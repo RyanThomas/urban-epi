@@ -49,7 +49,6 @@ Thumbs.db
 *.gz
 *.kate-swp
 *.jpg
-**/data/**
 ./python-notebooks/cache/*
 ./bash/create_location_grass
 ./bash/create_location_grass7.0.2-grace2.sh
