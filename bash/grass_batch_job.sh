@@ -1,8 +1,64 @@
 #!/bin/bash
 
-#r.in.gdal for all global rasters to PERMANENT mapset. 
+# This script takes a single argument in the form of a filepath to a shapefile. 
+# To run all the scripts at once, run the commands in the taskfile in sequence.
 
-r.in.gdal     input=$RAS/glcf/landuse_cover_beijing.tif   output=landuse --overwrite
+# Load the script with the command source and specify the grass database location_name and file to import. 
+# e.g.: bash  source/bash/grass_batch_job.sh $GRASSDB location $SEED/beijing.shp
+
+# These must be defined before the bash script above will work.
+export DIR=$HOME
+
+export DATA=/project/fas/hsu/rmt33/urban_epi/data/
+export IND="${DIR}/indicators"
+export SH="${DIR}/source/bash" 
+export GRASSDB="${DIR}/grassdb" 
+export RAS="${DATA}/raster"    
+export VEC="${DATA}/vector"   
+export SEED="${DIR}/source/seed_data"
+
+export GISDBASE=$1
+export LOCATION="$2$$"
+# Create name variable from file. The variable $1 in the bash portion of this line (not in AWK) 
+# represents the filepath for the shapefile you want to run.
+export NAME=$(echo `basename $3` | awk -F '.' '{ print $1 }')
+# Create bounds variable for g.region
+export BOUNDS=$(ogrinfo -al -so $3  | grep "Extent: " | awk '{ gsub ("[(),-]", ""); print ("n="$3+2,"s="$5-2, "e="$4+2, "w="$2-2) }' )  
+
+
+echo "LOCATION_NAME: $LOCATION"          > $HOME/.grass7/rc_$$
+echo "GISDBASE: $GISDBASE"              >> $HOME/.grass7/rc_$$
+echo "MAPSET: PERMANENT"                >> $HOME/.grass7/rc_$$
+echo "GRASS_GUI: text"                  >> $HOME/.grass7/rc_$$
+ 
+# path to GRASS settings file
+export GISRC=$HOME/.grass7/rc_$$
+export GRASS_PYTHON=python
+export GRASS_MESSAGE_FORMAT=plain
+export GRASS_PAGER=cat
+export GRASS_WISH=wish
+export GRASS_ADDON_BASE=$HOME/.grass7/addons
+export GRASS_VERSION=7.0.2
+export GISBASE=/usr/local/cluster/hpc/Apps/GRASS/7.0.2/grass-7.0.2
+export GRASS_PROJSHARE=/usr/local/cluster/hpc/Libs/PROJ/4.8.0/share/proj/
+export PROJ_DIR=/usr/local/cluster/hpc/Libs/PROJ/4.8.0
+ 
+export PATH="$GISBASE/bin:$GISBASE/scripts:$PATH"
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:"$GISBASE/lib"
+export GRASS_LD_LIBRARY_PATH="$LD_LIBRARY_PATH"
+#export PYTHONPATH="$GISBASE/etc/python:$PYTHONPATH"
+export MANPATH=$MANPATH:$GISBASE/man
+export GIS_LOCK=$$
+export GRASS_OVERWRITE=1
+
+echo "Creating grass database in: ${GISDBASE}/${LOCATION}/PERMANENT/
+Working on city:    $NAME      
+with extent:        $BOUNDS
+"
+grass70 -c -e -text ${GISDBASE}/${LOCATION}/PERMANENT/
+
+echo "Reading in data."
+r.in.gdal     input=$RAS/glcf/landuse_cover_${NAME}.tif   output=landuse --overwrite
 r.in.gdal     input=$RAS/air_pm25_2014_${NAME}.tif output=air_pm25_2014 --overwrite
 r.in.gdal     input=$RAS/air_pm25_2015_${NAME}.tif output=air_pm25_2015 --overwrite 
 
@@ -12,9 +68,7 @@ g.region      raster=landuse
 #------------------------------------------------------
 # BEGIN PATCH ANALYSIS
 echo "
-Calculating patch statistics for
-city:               $NAME      
-with extent:        $BOUNDS
+Calculating patch statistics.
 "
 
 # change landuse classifications so there are two values, 0 (for urban areas) and NULL
@@ -111,11 +165,9 @@ echo Patch stats complete, calculating air statistics.
 # TODO: get this to work.
 v.in.ogr ${SEED}/${NAME}.shp  snap=10e-7  --overwrite
 
-echo "
-----------------
-v.rast.stats
-----------------
-"
+echo "----------------
+v.rast.stats for air
+----------------"
 # r.mapcalc  "air_meanpm25 = (air_pm25_2015@PERMANENT + air_pm25_2014@PERMANENT) / 2" --overwrite
 v.rast.stats -c map=${NAME} raster=air_pm25_2015 column_prefix=a  method=minimum,maximum,average,median,stddev
 v.rast.stats -c map=${NAME} raster=air_pm25_2014 column_prefix=a  method=minimum,maximum,average,median,stddev
@@ -129,11 +181,9 @@ echo "outputting csv"
 # TODO look up -c flag, which is giving a warning now.
 v.out.ogr -c input=${NAME} layer=${NAME} output=${DATA}stats/air/${NAME}.csv format="CSV"  --overwrite --quiet
 
-echo "
--------------------------------------------
+echo "-------------------------------------------
 Air stats done, working on transport for city:    $NAME    
--------------------------------------------
-"
+-------------------------------------------"
 
 ########################################################
 # Transportation statistics.
@@ -233,5 +283,39 @@ EOF
 #r.external     input=$RAS/glcf/landuse_cover.vrt     output=landuse --overwrite
 #r.external     input=$RAS/pm25/GlobalGWR_PM25_GL_201401_201412-RH35_NoDust_NoSalt-NoNegs.asc output=air_pm25_2014 --overwrite
 #r.external     input=$RAS/pm25/GlobalGWR_PM25_GL_201501_201512-RH35_NoDust_NoSalt-NoNegs.asc output=air_pm25_2015 --overwrite 
-cd $DIR
 
+
+#-----------------------------------------
+# Hazardous Waste Stats
+
+# get / load all the hazardous waste locations in each city
+# TODO - figure out if we will use categories for weighting 
+
+# create buffer zones hazardous sites of 
+#250m =  1.0 
+#500m =  0.5
+#750m =  0.25
+#1000m = 0.1
+
+# add up the overlying buffers
+
+# figure out what percentage of the niehgborhood area 
+#area    weight  population area+pop_weighted exposure_score
+#.1       1.25       36,000      .125          4500
+#.2        .5        36,000      .1            3600
+#.3        .25       36,000      .075          3000
+#.5        .1        36,000      .05           1800
+#----------------------------------------------------------------
+#                                .36           12900/36000=
+
+#[ (.2 x 1.25) x (.8 x 1) ] x nbd pop = 
+
+# multiply the population of each neighborhood by a area-weighted hazardous site value
+# - count people within each buffer zones
+# - by area or using building heights
+
+# score the underlying neighborhood
+# 
+
+
+cd $DIR
