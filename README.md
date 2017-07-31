@@ -18,19 +18,15 @@ All the tools used in this analysis are open source, including the data, which a
 Importantly, the repo is intended to be cloned into a directory parent directory and renamed "source". In other words, the name of the directory once it is cloned should be "source", and it should be in a parent directory.
 #### Set up directory tree and get code
 - `git clone http://github.com/ryanthomas/urban-epi.git` to clone and rename the diectory.
-- `source source/bash/01_export_directory_tree.sh`
-- Write a grass_variables.sh file to match your directory tree. You should definitely review the `$DATA` variable to ensure it is pointing to the right directory.
-
-`echo '#!/bin/bash <br>
-
-export DIR=$PWD # home or parent directory for the code base of the project<br>
-export DATA="/project/fas/hsu/rmt33/urban_epi/data"  # EDIT THIS LINE<br>
-export IND="${DIR}/indicators"<br>
-export SH="${DIR}/source/bash" <br>
-export GRASSDB="${DIR}/grassdb" <br>
-export RAS="${DATA}/raster"    <br>
-export VEC="${DATA}/vector"' > source/bash/grass_variables.sh`<br>
-
+- Run `echo '#!/bin/bash
+export DIR=$PWD # home or parent directory for the code base of the project
+export DATA="/project/fas/hsu/rmt33/urban-epi/data"
+export IND="${DIR}/indicators"
+export SH="${DIR}/src/bash"
+export GRASSDB="${DIR}/grassdb"
+export RAS="${DATA}/raster"
+export VEC="${DATA}/vector"' > src/bash/grass_variables.sh
+source src/bash/grass_variables.sh
 
 #### Get data
 The data are available on the Yale High Performance Computing Cluster in the `/project/fas/hsu/rmt/urban_epi/data/` directory. Once you have access to the cluster, you can run `scp [from] [to]`. <br>
